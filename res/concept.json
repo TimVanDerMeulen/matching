@@ -1,0 +1,81 @@
+{
+  "fields": {
+    "group1": "Name",
+    "group2": "Abteilung",
+    "group3": "Standort",
+    "group4": "Wunschpartner",
+    "group5": "Team"
+  },
+  "elements": {
+    "01": {
+      "group1": "Tim",
+      "group2": "DevOps",
+      "group3": "Bonn",
+      "group4": "Gabi",
+      "group5": "Devs"
+    },
+    "02": {
+      "group1": "Gabi",
+      "group2": "DevOps",
+      "group3": "Bonn",
+      "group4": "Gabi",
+      "group5": "Devs"
+    },
+    "03": {
+      "group1": "Tobias",
+      "group2": "DevOps",
+      "group3": "Bonn",
+      "group4": "Tim",
+      "group5": "Infra"
+    },
+    "04": {
+      "group1": "Mama",
+      "group2": "Eltern",
+      "group3": "Aachen",
+      "group4": "Tim",
+      "group5": "Mutter"
+    },
+    "05": {
+      "group1": "Papa",
+      "group2": "Eltern",
+      "group3": "Aachen",
+      "group4": "Tim",
+      "group5": "Vater"
+    },
+    "06": {
+      "group1": "Thomas",
+      "group2": "DevOps",
+      "group3": "Bonn",
+      "group4": "Tim",
+      "group5": "Chef"
+    }
+  },
+  "rules": {
+    "references": {
+      "group4": "group1"
+    },
+    "matching": [
+      {
+        "type": "force",
+        "operand": "match",
+        "field": "group3"
+      },
+      {
+        "type": "prefer",
+        "prio": 1,
+        "operand": "match",
+        "field": "group4"
+      },
+      {
+        "type": "force-exclude",
+        "operand": "match",
+        "field": "group5"
+      },
+      {
+        "type": "prefer-exclude",
+        "operand": "match",
+        "field": "group2"
+      }
+    ]
+  }
+}
