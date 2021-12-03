@@ -1,12 +1,12 @@
-use connections::Connection;
+use crate::connections::Connection;
+use crate::score::Scorer;
 use derivative::Derivative;
 use regex;
-use score::Scorer;
+use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 
-#[derive(Derivative, Serialize, Deserialize)]
+#[derive(Derivative, Serialize, Deserialize, Clone)]
 pub(crate) struct Rule {
     #[derivative(Default(value = "RuleSeverity::IGNORE"))]
     pub(crate) severity: RuleSeverity,
@@ -18,7 +18,7 @@ pub(crate) struct Rule {
     pub(crate) operand: RuleOperand,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Copy, Clone, PartialEq)]
 pub(crate) enum RuleSeverity {
     Force,
     Prefer,
@@ -27,13 +27,13 @@ pub(crate) enum RuleSeverity {
     ForceExclude,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Copy, Clone, PartialEq)]
 pub(crate) enum RuleOperand {
     Match,
     Include,
 }
 
-trait RuleActions {
+pub(crate) trait RuleActions {
     fn check(
         &self,
         id: &str,
@@ -70,9 +70,12 @@ impl RuleActions for Rule {
             .trim();
         return match self.operand {
             RuleOperand::Match => value == target_value,
-            RuleOperand::Include => {
-                value.matches(format!("^(.*, *)?{}( *,.*|$)", regex::escape(target_value)))
-            }
+            RuleOperand::Include => Regex::new(&*format!(
+                "^(.*, *)?{}( *,.*|$)",
+                regex::escape(target_value)
+            ))
+            .unwrap()
+            .is_match(value),
         };
     }
 
@@ -83,60 +86,25 @@ impl RuleActions for Rule {
             | RuleSeverity::Standard
             | RuleSeverity::PreferExclude => {
                 let mut con = Connection {
-                    to_element: target.into_string(),
+                    to_element: target.to_string(),
                     score: self.severity.getScore(),
                 };
                 connections
-                    .get(id)
+                    .get_mut(id)
                     .expect(&*format!("Missing element {}", id))
                     .push(con);
-
-                // increase score for bidirectional references
-                // todo better logic and don't forget con from above
-                //if self.field != self.target_field {
-                //    let mut back_con = connections
-                //        .get(target)
-                //        .expect(&*format!("Missing element {}", target))
-                //        .iter_mut()
-                //        .find(|c| c.to_element == id);
-                //    if let Some(bc) = back_con {
-                //        if bc.score > 0 {
-                //            bc.score += RuleSeverity::Standard.getScore()
-                //        } else {
-                //            bc.score -= RuleSeverity::Standard.getScore()
-                //        }
-                //    }
-                //}
             }
             RuleSeverity::ForceExclude => {
                 // remove any connection between both
                 connections
-                    .get(id)
+                    .get_mut(id)
                     .expect(&*format!("Missing element {}", id))
-                    .retain(|&c| c.to_element == target);
+                    .retain(|c| c.to_element == target);
                 connections
-                    .get(target)
+                    .get_mut(target)
                     .expect(&*format!("Missing element {}", target))
-                    .retain(|&c| c.to_element == id);
+                    .retain(|c| c.to_element == id);
             }
         }
     }
 }
-
-// trait RuleApplier<T> {
-//     fn apply(&self, id: String, apply_to: &mut T, target: String, apply_to: &mut T);
-// }
-//
-// impl RuleApplier<Vec<Connection>> for Rule {
-//     fn apply(&self, id: String, cons: &mut Vec<Connection>) {
-//         let mut locked = matches!(self.severity, RuleSeverity::Force);
-//         for con in cons {
-//             match self.operand {
-//                 RuleOperand::Match => {}
-//                 RuleOperand::Include => {}
-//             }
-//         }
-//
-//         cons.push(Connection { to_element: id, score: self.severity.getScore(), locked: matches!(self.severity, RuleSeverity::Force) });
-//     }
-// }

@@ -1,0 +1,17 @@
+elemente als liste statt map
+
+1. matrix aus 1 und diagonale 0
+2. normale prios werden eingefügt
+3. pro force:
+ -> force: alles was nicht matcht => -max
+ -> force-exclue: alles was matcht => -max
+4. starten bei zufälligem element und greedy die outputs befüllen
+ -> startpunkt merken
+ -> falls startpunkt noch nicht verwendet weiter machen, sonst anderen startpunkt
+ -> falls -max verwendet => abbruch und next
+ -> falls max vorhanden => muss verwendet werden
+ -> max summe aller outputs pro durchlauf / startpunkt addiert gewinnt
+ -> ggf. parallelisieren
+5. falls am Ende eine Sackgasse (z.B. weil force-excluded übrig) => start bei diesem Element
+ -> falls alle elemente bereits als startpunkt verwendet => Information an User, dass nicht möglich
+

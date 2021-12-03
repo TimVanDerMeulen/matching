@@ -18,15 +18,15 @@
       "group1": "Gabi",
       "group2": "DevOps",
       "group3": "Bonn",
-      "group4": "Gabi",
-      "group5": "Devs"
+      "group4": "Tim",
+      "group5": "Cuteness Committee"
     },
     "03": {
       "group1": "Tobias",
       "group2": "DevOps",
       "group3": "Bonn",
       "group4": "Tim",
-      "group5": "Infra"
+      "group5": "Devs"
     },
     "04": {
       "group1": "Mama",
@@ -50,32 +50,30 @@
       "group5": "Chef"
     }
   },
-  "rules": {
-    "references": {
-      "group4": "group1"
+  "rules": [
+    {
+      "severity": "PreferExclude",
+      "field": "group2",
+      "target_field": "group2",
+      "operand": "Match"
     },
-    "matching": [
-      {
-        "type": "force",
-        "operand": "match",
-        "field": "group3"
-      },
-      {
-        "type": "prefer",
-        "prio": 1,
-        "operand": "match",
-        "field": "group4"
-      },
-      {
-        "type": "force-exclude",
-        "operand": "match",
-        "field": "group5"
-      },
-      {
-        "type": "prefer-exclude",
-        "operand": "match",
-        "field": "group2"
-      }
-    ]
-  }
+    {
+      "severity": "Force",
+      "field": "group3",
+      "target_field": "group3",
+      "operand": "Match"
+    },
+    {
+      "severity": "Prefer",
+      "field": "group4",
+      "target_field": "group1",
+      "operand": "Match"
+    },
+    {
+      "severity": "ForceExclude",
+      "field": "group5",
+      "target_field": "group5",
+      "operand": "Match"
+    }
+  ]
 }
