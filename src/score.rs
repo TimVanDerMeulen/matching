@@ -2,17 +2,17 @@ use crate::rules::RuleSeverity;
 use crate::rules::RuleSeverity::*;
 
 pub(crate) trait Scorer<T> {
-    fn getScore(&self) -> T;
+    fn get_score(&self) -> T;
 }
 
 impl Scorer<i8> for RuleSeverity {
-    fn getScore(&self) -> i8 {
+    fn get_score(&self) -> i8 {
         return match self {
-            Force=> 99,
+            Force => i8::MAX,
             Prefer => 2,
             Standard => 1,
             PreferExclude => -2,
-            ForceExclude => -99
-        }
+            ForceExclude => i8::MIN,
+        };
     }
 }
