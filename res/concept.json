@@ -75,5 +75,8 @@
       "target_field": "group5",
       "operand": "Match"
     }
-  ]
+  ],
+  "outputs": {
+    "2": -1
+  }
 }
