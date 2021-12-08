@@ -9,6 +9,12 @@ pub(crate) struct Connections {
     fixed_order: Vec<String>,
 }
 
+impl Connections {
+    pub(crate) fn len(&self) -> usize {
+        return self.fixed_order.len();
+    }
+}
+
 pub(crate) trait Connector<S, T> {
     fn from_data(data: &T) -> Self;
     fn apply(&mut self, to_apply: &S, extra_info: &T);
