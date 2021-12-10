@@ -1,5 +1,5 @@
-use crate::rules::RuleSeverity;
-use crate::rules::RuleSeverity::*;
+use crate::matching::rules::RuleSeverity;
+use crate::matching::rules::RuleSeverity::*;
 
 pub(crate) trait Scorer<T> {
     fn get_score(&self) -> T;

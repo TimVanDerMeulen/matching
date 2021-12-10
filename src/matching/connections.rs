@@ -1,5 +1,5 @@
-use crate::rules::{Rule, RuleActions, RuleSeverity};
-use crate::score::Scorer;
+use crate::matching::rules::{Rule, RuleActions, RuleSeverity};
+use crate::matching::score::Scorer;
 use std::collections::HashMap;
 use std::fmt;
 use std::iter::FromIterator;

@@ -1,4 +1,4 @@
-use crate::score::Scorer;
+use crate::matching::score::Scorer;
 use derivative::Derivative;
 use regex;
 use regex::Regex;
