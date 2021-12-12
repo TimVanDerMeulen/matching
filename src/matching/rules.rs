@@ -7,8 +7,8 @@ use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 use std::fmt;
 
-#[derive(Derivative, Serialize, Deserialize, Clone)]
-pub(crate) struct Rule {
+#[derive(Derivative, Serialize, Deserialize, Clone, Debug)]
+pub struct Rule {
     #[derivative(Default(value = "RuleSeverity::IGNORE"))]
     pub(crate) severity: RuleSeverity,
     #[derivative(Default(value = ""))]
@@ -20,7 +20,7 @@ pub(crate) struct Rule {
 }
 
 #[derive(Serialize, Deserialize, Copy, Clone, PartialEq, Debug)]
-pub(crate) enum RuleSeverity {
+pub enum RuleSeverity {
     Force,
     Prefer,
     Standard,
@@ -29,12 +29,12 @@ pub(crate) enum RuleSeverity {
 }
 
 #[derive(Serialize, Deserialize, Copy, Clone, PartialEq, Debug)]
-pub(crate) enum RuleOperand {
+pub enum RuleOperand {
     Match,
     Include,
 }
 
-pub(crate) trait RuleActions {
+pub trait RuleActions {
     fn check(
         &self,
         id: &str,

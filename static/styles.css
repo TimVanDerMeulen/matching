@@ -1,0 +1,13 @@
+.result-list {
+  display: flex;
+  flex-direction: column;
+}
+.result .result-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.connection-list {
+  display: flex;
+  flex-direction: row;
+}

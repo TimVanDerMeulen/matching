@@ -2,7 +2,6 @@ extern crate itertools;
 extern crate regex;
 extern crate serde;
 extern crate serde_json;
-extern crate wasm_bindgen;
 
 use self::itertools::Itertools;
 use crate::matching::connections::{Connections, Connector};
@@ -122,16 +121,12 @@ fn calc_max_combinations(
     return current_max;
 }
 
-//#[wasm_bindgen]
-pub fn process(data: String) -> String {
-    let matching_data: MatchingData =
-        serde_json::from_str(&data).expect("JSON was not well-formatted");
-
+pub fn process(matching_data: &MatchingData) -> MatchingResult {
     let mut connections = Connections::from_data(&matching_data.elements);
     //println!("{}", connections.to_string());
-    for rule in matching_data.rules {
+    for rule in &matching_data.rules {
         //println!("{}", rule.to_string());
-        connections.apply(&rule, &matching_data.elements);
+        connections.apply(rule, &matching_data.elements);
         //println!("{}", connections.to_string());
     }
 
@@ -161,6 +156,8 @@ pub fn process(data: String) -> String {
     for comb in &max_combinations {
         debug_println!("{:?}", comb);
     }
-    return serde_json::to_string(&(max_score, max_combinations))
-        .expect("Could not convert result to json!");
+    return MatchingResult {
+        score: max_score,
+        connections: max_combinations,
+    };
 }
