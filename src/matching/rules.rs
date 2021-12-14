@@ -7,7 +7,7 @@ use std::collections::hash_map::RandomState;
 use std::collections::HashMap;
 use std::fmt;
 
-#[derive(Derivative, Serialize, Deserialize, Clone, Debug)]
+#[derive(Derivative, Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct Rule {
     #[derivative(Default(value = "RuleSeverity::IGNORE"))]
     pub(crate) severity: RuleSeverity,
