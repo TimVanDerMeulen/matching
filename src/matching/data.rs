@@ -38,5 +38,5 @@ impl MatchingData {
 #[derive(Serialize, Deserialize)]
 pub struct MatchingResult {
     pub score: i32,
-    pub connections: Vec<Vec<usize>>,
+    pub connections: Vec<Vec<String>>,
 }

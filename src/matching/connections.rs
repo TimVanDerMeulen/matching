@@ -13,6 +13,13 @@ impl Connections {
     pub(crate) fn len(&self) -> usize {
         return self.fixed_order.len();
     }
+    pub(crate) fn for_index(&self, index: &usize) -> String {
+        return self
+            .fixed_order
+            .get(*index)
+            .expect("No item with that index!")
+            .to_string();
+    }
 }
 
 pub(crate) trait Connector<S, T> {

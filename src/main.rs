@@ -1,6 +1,7 @@
 extern crate console_error_panic_hook;
 use std::panic;
 extern crate log;
+extern crate proc_macro;
 extern crate yew;
 
 use log::Level;

@@ -158,6 +158,9 @@ pub fn process(matching_data: &MatchingData) -> MatchingResult {
     }
     return MatchingResult {
         score: max_score,
-        connections: max_combinations,
+        connections: max_combinations
+            .iter()
+            .map(|con| con.iter().map(|c| connections.for_index(c)).collect())
+            .collect(),
     };
 }
