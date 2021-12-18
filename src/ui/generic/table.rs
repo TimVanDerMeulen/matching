@@ -14,7 +14,8 @@ where
 {
     pub headers: HEADERS,
     pub data: DATA,
-    pub body: Option<Html>,
+    #[prop_or_default]
+    pub children: Children,
 }
 
 impl Component for TabledDisplay<Vec<String>, Vec<Vec<String>>> {
@@ -44,7 +45,7 @@ impl Component for TabledDisplay<Vec<String>, Vec<Vec<String>>> {
                             }).collect::<Vec<Html>>() }
                         </tr>
                     }).collect::<Vec<Html>>() }
-                    { ctx.props().body.as_ref().unwrap_or(&html!{}).clone() }
+                    { ctx.props().children.clone() }
                 </tbody>
             </table>
         };
@@ -90,7 +91,7 @@ impl Component
                             }).collect::<Vec<Html>>() }
                         </tr>
                     }).collect::<Vec<Html>>() }
-                    { ctx.props().body.as_ref().unwrap_or(&html!{}).clone() }
+                    { ctx.props().children.clone() }
                 </tbody>
             </table>
         };

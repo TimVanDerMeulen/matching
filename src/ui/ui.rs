@@ -1,5 +1,6 @@
 use crate::matching::data::{MatchingData, MatchingResult};
 use crate::matching::process;
+use crate::ui::generic::collapsable::Collapsable;
 use crate::ui::generic::table::TabledDisplay;
 use crate::ui::input::json_loader::JsonLoader;
 use crate::ui::rules::RuleDisplay;
@@ -60,30 +61,43 @@ impl Component for BaseModel {
     fn view(&self, ctx: &Context<Self>) -> Html {
         return html! {
             <div>
-                <JsonLoader change_callback={Some(ctx.link().callback(move |msg| msg))}/>
-                {
-                    if_exists(&self.matching_data, |matching_data| {
-                        html! {
-                            <>
+                <Collapsable header="Data" opened=true>
+                    <Collapsable header="Info">
+                        { "Some info ..." }
+                    </Collapsable>
+                    <JsonLoader change_callback={Some(ctx.link().callback(move |msg| msg))}/>
+                    {
+                        if_exists(&self.matching_data, |matching_data| {
+                            html! {
                                 <TabledDisplay<std::collections::HashMap<String, String>, std::collections::HashMap<String, std::collections::HashMap<String, String>>>
                                     headers={matching_data.fields.clone()}
                                     data={matching_data.elements.clone()}
                                 />
+                            }
+                        })
+                    }
+                </Collapsable>
+                {
+                    if_exists(&self.matching_data, |matching_data| {
+                        html! {
+                            <Collapsable header="Rules">
                                 <RuleDisplay
                                     rules={matching_data.rules.clone()}
                                     fields={matching_data.fields.clone()}
                                 />
                                 <button onclick={ctx.link().callback(|_| BaseMsg::Process)}>{ "Process" }</button>
-                            </>
+                            </Collapsable>
                         }
                     })
                 }
                 {
                     if_exists(&self.results, |matching_data| {
                         html! {
-                            <div class="result-list">
-                                { if let Some(results) = &self.results { results.iter().map(|res| self.view_result(res)).collect::<Vec<Html>>() } else {vec![html!{}]}}
-                            </div>
+                            <Collapsable header="Result">
+                                <div class="result-list">
+                                    { if let Some(results) = &self.results { results.iter().map(|res| self.view_result(res)).collect::<Vec<Html>>() } else {vec![html!{}]}}
+                                </div>
+                            </Collapsable>
                         }
                     })
                 }

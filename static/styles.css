@@ -11,3 +11,37 @@
   display: flex;
   flex-direction: row;
 }
+.collapsible {
+  background-color: #ccc;
+  border-color: #777;
+  border-style: solid;
+}
+
+.collapsible > button {
+  background-color: #777;
+  color: #fff;
+  cursor: pointer;
+  padding: 0.6em;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+.collapsible > button i {
+  margin-right: 0.5em;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+  background-color: #ccc;
+}
+
+.collapsible .collapsible-content > * {
+  margin: 0.5em;
+
+}
+
+.hidden {
+    display: none;
+}

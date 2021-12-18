@@ -52,8 +52,11 @@ impl Component for RuleDisplay {
     }
 
     fn view(&self, ctx: &Context<Self>) -> Html {
-        let rows = Some(html! {
-            <>
+        return html! {
+            <TabledDisplay<std::vec::Vec<String>, std::vec::Vec<std::vec::Vec<String>>>
+                headers={self.headers.clone()}
+                data={Vec::new()}
+            >
                 {
                     ctx.props().rules.iter().map(|rule| html! {
                         <tr>
@@ -64,14 +67,7 @@ impl Component for RuleDisplay {
                         </tr>
                     }).collect::<Vec<Html>>()
                 }
-            </>
-        });
-        return html! {
-            <TabledDisplay<std::vec::Vec<String>, std::vec::Vec<std::vec::Vec<String>>>
-                headers={self.headers.clone()}
-                data={Vec::new()}
-                body={rows}
-            />
+            </TabledDisplay<std::vec::Vec<String>, std::vec::Vec<std::vec::Vec<String>>>>
         };
     }
 }
