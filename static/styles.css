@@ -1,3 +1,21 @@
+/* Layout */
+.flex-horizontal, .flex-vertical {
+    display: flex;
+}
+.flex-vertical {
+    flex-direction: column;
+}
+
+body > * > * {
+  margin: 0.1em;
+}
+
+/* Generic */
+.hidden {
+    display: none;
+}
+
+/* Others */
 .result-list {
   display: flex;
   flex-direction: column;
@@ -11,6 +29,8 @@
   display: flex;
   flex-direction: row;
 }
+
+/* Collapsible */
 .collapsible {
   background-color: #ccc;
   border-color: #777;
@@ -31,17 +51,18 @@
 .collapsible > button i {
   margin-right: 0.5em;
 }
-
-/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
 .active, .collapsible:hover {
   background-color: #ccc;
 }
 
 .collapsible .collapsible-content > * {
   margin: 0.5em;
-
+}
+.collapsible + .disabled > * > i {
+    color: #c66;
 }
 
-.hidden {
-    display: none;
+/* JSON Loader */
+#jsonTextarea {
+    weight: 5;
 }

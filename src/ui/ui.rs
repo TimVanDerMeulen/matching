@@ -60,7 +60,7 @@ impl Component for BaseModel {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         return html! {
-            <div>
+            <div class="flex-vertical">
                 <Collapsable header="Data" opened=true>
                     <Collapsable header="Info">
                         { "Some info ..." }
@@ -77,30 +77,32 @@ impl Component for BaseModel {
                         })
                     }
                 </Collapsable>
-                {
-                    if_exists(&self.matching_data, |matching_data| {
-                        html! {
-                            <Collapsable header="Rules">
-                                <RuleDisplay
-                                    rules={matching_data.rules.clone()}
-                                    fields={matching_data.fields.clone()}
-                                />
-                                <button onclick={ctx.link().callback(|_| BaseMsg::Process)}>{ "Process" }</button>
-                            </Collapsable>
-                        }
-                    })
-                }
-                {
-                    if_exists(&self.results, |matching_data| {
-                        html! {
-                            <Collapsable header="Result">
+                <Collapsable header="Rules" enabled={self.matching_data.is_some()}>
+                    {
+                        if_exists(&self.matching_data, |matching_data| {
+                            html! {
+                                <>
+                                    <RuleDisplay
+                                        rules={matching_data.rules.clone()}
+                                        fields={matching_data.fields.clone()}
+                                    />
+                                    <button onclick={ctx.link().callback(|_| BaseMsg::Process)}>{ "Process" }</button>
+                                </>
+                            }
+                        })
+                    }
+                </Collapsable>
+                <Collapsable header="Result" enabled={self.results.is_some()}>
+                    {
+                        if_exists(&self.results, |matching_data| {
+                            html! {
                                 <div class="result-list">
                                     { if let Some(results) = &self.results { results.iter().map(|res| self.view_result(res)).collect::<Vec<Html>>() } else {vec![html!{}]}}
                                 </div>
-                            </Collapsable>
-                        }
-                    })
-                }
+                            }
+                        })
+                    }
+                </Collapsable>
             </div>
         };
     }

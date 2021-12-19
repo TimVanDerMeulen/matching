@@ -46,10 +46,10 @@ impl Component for JsonLoader {
 
     fn view(&self, ctx: &Context<Self>) -> Html {
         return html! {
-            <div>
-                <input
+            <div class="flex-vertical">
+                <textarea
+                    id="jsonTextarea"
                     class="edit"
-                    type="text"
                     value={self.json_value.clone()}
                     oninput={ctx.link().callback(|e: InputEvent| JsonMsg::UpdateJson(e.data().unwrap_or("".to_string())))}
                     onkeypress={ctx.link().batch_callback(move |e: KeyboardEvent| {
