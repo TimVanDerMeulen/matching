@@ -50,6 +50,7 @@ impl Component for JsonLoader {
                 <textarea
                     id="jsonTextarea"
                     class="edit"
+                    rows="10"
                     value={self.json_value.clone()}
                     oninput={ctx.link().callback(|e: InputEvent| JsonMsg::UpdateJson(e.data().unwrap_or("".to_string())))}
                     onkeypress={ctx.link().batch_callback(move |e: KeyboardEvent| {
