@@ -1,4 +1,4 @@
-use crate::matching::rules::Rule;
+use crate::matching::rules::{Rule, RuleOperand, RuleSeverity};
 use crate::ui::generic::table::TabledDisplay;
 use crate::ui::ui::BaseMsg;
 use std::collections::HashMap;
@@ -10,7 +10,7 @@ pub(crate) struct RuleDisplay {
 
 pub enum RuleMsg {
     NewRule,
-    SaveRule,
+    Delete(usize),
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -28,22 +28,28 @@ impl Component for RuleDisplay {
     fn create(_ctx: &Context<Self>) -> Self {
         Self {
             headers: Vec::from([
-                "Column".to_string(),
+                "Actions".to_string(),
                 "Severity".into(),
+                "Column".into(),
                 "Operand".into(),
-                "Target".into(),
-                "Actions".into(),
+                "Target Column".into(),
             ]),
         }
     }
 
-    fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
+    fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool {
+        let mut rules = ctx.props().rules.clone();
         match msg {
-            RuleMsg::NewRule => {}
-            RuleMsg::SaveRule => {}
+            RuleMsg::NewRule => rules.push(Rule::new()),
+            RuleMsg::Delete(index) => {
+                rules.remove(index);
+            }
+            _ => unimplemented!(),
+        };
+        if let Some(callback) = &ctx.props().change_callback {
+            callback.emit(BaseMsg::UpdateMatchingData(None, None, Some(rules), None));
         }
-        unimplemented!();
-        false
+        false // redraw triggered by parent
     }
 
     fn changed(&mut self, _ctx: &Context<Self>) -> bool {
@@ -58,15 +64,71 @@ impl Component for RuleDisplay {
                 data={Vec::new()}
             >
                 {
-                    ctx.props().rules.iter().map(|rule| html! {
-                        <tr>
-                            <td>{ rule.field.clone() }</td>
-                            <td>{ rule.severity.to_string() }</td>
-                            <td>{ rule.operand.to_string() }</td>
-                            <td>{ rule.target_field.clone() }</td>
+                    ctx.props().rules.iter().enumerate().map(|(index, rule)| html! {
+                        <tr class={ if rule.is_valid() {""} else {"invalid"} }>
+                            <td>
+                                <button onclick={ctx.link().callback(move |_| RuleMsg::Delete(index))}>{ "-" }</button>
+                            </td>
+                            <td>
+                                <select>
+                                  { RuleSeverity::values().iter().map(|name| html! {
+                                    <option
+                                        value={ name.to_string() }
+                                        selected={ rule.severity == *name }
+                                    >
+                                        { name.to_string() }
+                                    </option>
+                                  }).collect::<Vec<Html>>() }
+                                </select>
+                            </td>
+                            <td>
+                                <select>
+                                  { ctx.props().fields.iter().map(|(id, name)| html! {
+                                    <option
+                                        value={ id.clone() }
+                                        selected={ rule.field == *id }
+                                    >
+                                        { name.clone() }
+                                    </option>
+                                  }).collect::<Vec<Html>>() }
+                                </select>
+                            </td>
+                            <td>
+                                <select>
+                                  { RuleOperand::values().iter().map(|name| html! {
+                                    <option
+                                        value={ name.to_string() }
+                                        selected={ rule.operand == *name }
+                                    >
+                                        { name.to_string() }
+                                    </option>
+                                  }).collect::<Vec<Html>>() }
+                                </select>
+                            </td>
+                            <td>
+                                <select>
+                                  { ctx.props().fields.iter().map(|(id, name)| html! {
+                                    <option
+                                        value={ id.clone() }
+                                        selected={ rule.target_field == *id }
+                                    >
+                                        { name.clone() }
+                                    </option>
+                                  }).collect::<Vec<Html>>() }
+                                </select>
+                            </td>
                         </tr>
                     }).collect::<Vec<Html>>()
                 }
+                <tr>
+                    <td style="text-align: right;">
+                        <button onclick={ctx.link().callback(move |_| RuleMsg::NewRule)}>{ "+" }</button>
+                    </td>
+                    <td/>
+                    <td/>
+                    <td/>
+                    <td/>
+                </tr>
             </TabledDisplay<std::vec::Vec<String>, std::vec::Vec<std::vec::Vec<String>>>>
         };
     }

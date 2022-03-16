@@ -34,9 +34,13 @@ impl Component for JsonLoader {
             JsonMsg::UpdateJson(json) => self.json_value = json,
             JsonMsg::LoadJson => {
                 if let Some(callback) = &ctx.props().change_callback {
+                    let data: MatchingData = serde_json::from_str(&self.json_value)
+                        .expect("JSON was not well-formatted");
                     callback.emit(BaseMsg::UpdateMatchingData(
-                        serde_json::from_str(&self.json_value)
-                            .expect("JSON was not well-formatted"),
+                        Some(data.fields),
+                        Some(data.elements),
+                        Some(data.rules),
+                        Some(data.outputs),
                     ))
                 }
             }

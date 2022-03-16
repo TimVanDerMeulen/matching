@@ -14,6 +14,9 @@ body > * > * {
 .hidden {
     display: none;
 }
+.invalid {
+    background-color: #c66;
+}
 
 /* Others */
 .result-list {
@@ -62,7 +65,10 @@ body > * > * {
     color: #c66;
 }
 
-/* JSON Loader */
-#jsonTextarea {
-    weight: 5;
+/* table */
+th, td {
+  text-align: right;
+}
+th:first-child, td:first-child  {
+  text-align: left !important;
 }

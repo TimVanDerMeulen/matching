@@ -1,3 +1,5 @@
+use crate::matching::rules::RuleOperand::{Include, Match};
+use crate::matching::rules::RuleSeverity::{Force, ForceExclude, Prefer, PreferExclude, Standard};
 use crate::matching::score::Scorer;
 use derivative::Derivative;
 use regex;
@@ -19,6 +21,21 @@ pub struct Rule {
     pub(crate) operand: RuleOperand,
 }
 
+impl Rule {
+    pub fn new() -> Self {
+        Self {
+            severity: RuleSeverity::Prefer,
+            field: "".to_string(),
+            target_field: "".to_string(),
+            operand: RuleOperand::Match,
+        }
+    }
+
+    pub fn is_valid(&self) -> bool {
+        return !self.field.is_empty() && !self.target_field.is_empty();
+    }
+}
+
 #[derive(Serialize, Deserialize, Copy, Clone, PartialEq, Debug)]
 pub enum RuleSeverity {
     Force,
@@ -28,10 +45,22 @@ pub enum RuleSeverity {
     ForceExclude,
 }
 
+impl<'a> RuleSeverity {
+    pub fn values() -> Vec<Self> {
+        return vec![Force, Prefer, Standard, PreferExclude, ForceExclude];
+    }
+}
+
 #[derive(Serialize, Deserialize, Copy, Clone, PartialEq, Debug)]
 pub enum RuleOperand {
     Match,
     Include,
+}
+
+impl<'a> RuleOperand {
+    pub fn values() -> Vec<Self> {
+        return vec![Match, Include];
+    }
 }
 
 pub trait RuleActions {

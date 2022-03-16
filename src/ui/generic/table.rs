@@ -77,17 +77,17 @@ impl Component
         return html! {
             <table>
                 <thead>
-                    <th style="text-align: left;">{ "Id" }</th>
+                    <th>{ "Id" }</th>
                     { keys.iter().map(|key| html! {
-                        <th style="text-align: right;">{ ctx.props().headers.get(key).expect(&*format!("Value missing for header {}", key)) }</th>
+                        <th>{ ctx.props().headers.get(key).expect(&*format!("Value missing for header {}", key)) }</th>
                     }).collect::<Vec<Html>>() }
                 </thead>
                 <tbody>
                     { ctx.props().data.iter().map(|(data_key, data)| html! {
                         <tr>
-                            <td style="text-align: left;">{ data_key }</td>
+                            <td>{ data_key }</td>
                             { keys.iter().map(|key| html! {
-                                <td style="text-align: right;">{ data.get(key).expect(&*format!("Value missing for {} {}", data_key, key)) }</td>
+                                <td>{ data.get(key).expect(&*format!("Value missing for {} {}", data_key, key)) }</td>
                             }).collect::<Vec<Html>>() }
                         </tr>
                     }).collect::<Vec<Html>>() }

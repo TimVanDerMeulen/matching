@@ -5,11 +5,11 @@ use crate::ui::generic::table::TabledDisplay;
 use crate::ui::input::json_loader::JsonLoader;
 use crate::ui::rules::RuleDisplay;
 
-use yew::events::KeyboardEvent;
-use yew::{html, Callback, Component, Context, Html};
+use yew::{html, Component, Context, Html};
 
 use crate::matching::connections::Connections;
 use crate::matching::rules::Rule;
+use std::collections::HashMap;
 
 pub(crate) struct BaseModel {
     matching_data: Option<MatchingData>,
@@ -18,12 +18,13 @@ pub(crate) struct BaseModel {
 }
 
 pub enum BaseMsg {
-    UpdateMatchingData(MatchingData),
-    //LoadCSV(String),
-    //ChangeFieldMapping { field: String, target: String },
-    //AddRule(Rule),
+    UpdateMatchingData(
+        /* fields: */ Option<HashMap<String, String>>,
+        /* elements: */ Option<HashMap<String, HashMap<String, String>>>,
+        /* rules: */ Option<Vec<Rule>>,
+        /* outputs: */ Option<HashMap<usize, i16>>,
+    ),
     Process,
-    //DownloadCSV,
 }
 impl Component for BaseModel {
     type Message = BaseMsg;
@@ -39,7 +40,24 @@ impl Component for BaseModel {
 
     fn update(&mut self, _ctx: &Context<Self>, msg: Self::Message) -> bool {
         match msg {
-            BaseMsg::UpdateMatchingData(data) => self.matching_data = Some(data),
+            BaseMsg::UpdateMatchingData(fields_opt, elements_opt, rules_opt, outputs_opt) => {
+                if self.matching_data.is_none() {
+                    self.matching_data = Some(MatchingData::new());
+                }
+                let mut matching_data = self.matching_data.as_mut().expect("Impossible to reach!");
+                if let Some(fields) = fields_opt {
+                    matching_data.fields = fields;
+                }
+                if let Some(elements) = elements_opt {
+                    matching_data.elements = elements;
+                }
+                if let Some(rules) = rules_opt {
+                    matching_data.rules = rules;
+                }
+                if let Some(outputs) = outputs_opt {
+                    matching_data.outputs = outputs;
+                }
+            }
             BaseMsg::Process => {
                 if self.results.is_none() {
                     self.results = Some(Vec::new());
@@ -85,6 +103,7 @@ impl Component for BaseModel {
                                     <RuleDisplay
                                         rules={matching_data.rules.clone()}
                                         fields={matching_data.fields.clone()}
+                                        change_callback={Some(ctx.link().callback(move |msg| msg))}
                                     />
                                     <button onclick={ctx.link().callback(|_| BaseMsg::Process)}>{ "Process" }</button>
                                 </>
